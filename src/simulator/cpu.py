@@ -26,11 +26,11 @@ class Cpu:
         self._pstate = value
 
     @property
-    def reg(self)->[int]:
+    def register(self)->[int]:
         return self._reg
 
     @property
-    def mem(self)->bytearray:
+    def memory(self)->bytearray:
         return self._mem
 
     def fetch(self)->bytearray:
@@ -41,11 +41,11 @@ class Cpu:
         if self.pc < 0 or self.pc > 4096:
             log_err(f"sys abort due to invalid pc: {self.pc}")
 
-        op = self.mem[self.pc]
+        op = self.memory[self.pc]
         if op >= len(inst_list):
             log_err(f"sys abort due to invalid inst op: {op}")
 
-        return self.mem[self.pc: self.pc + 4]
+        return self.memory[self.pc: self.pc + 4]
 
     def run(self, max_step: int):
         """

@@ -1,9 +1,10 @@
 from typing import Tuple, List, Callable
 
+from src.util.converter import inst_to_int, imme_to_bytes
 from src.util.log import log
 
 
-def _to_imme(word: str) -> int:
+def __str_to_imme(word: str) -> int:
     """
     convert word in assemble to immediate value
     :param word: input string
@@ -15,7 +16,7 @@ def _to_imme(word: str) -> int:
     return imme
 
 
-def _to_reg(word: str, target_reg: bool) -> int:
+def __str_to_reg(word: str, target_reg: bool) -> int:
     """
     convert word in assemble to register NO.
     :param word: input string
@@ -26,10 +27,6 @@ def _to_reg(word: str, target_reg: bool) -> int:
     if reg < 1 if target_reg else 0 or reg > 12:
         raise ValueError(f"bad register id: {word}")
     return reg
-
-
-def _to_int(inst: bytearray) -> int:
-    return int.from_bytes(inst, 'little', signed=False)
 
 
 def _assemble_inst(op: int, tr: int) -> bytearray:
@@ -51,7 +48,7 @@ def _assemble_reg_inst(op: int, tr: int, sr1: int, sr2: int) -> bytearray:
     inst = _assemble_inst(op, tr)
     inst[2] = sr1
     inst[3] = sr2
-    log(f"{op}, {tr}, {sr1}, {sr2} -> {_to_int(inst)}")
+    log(f"{op}, {tr}, {sr1}, {sr2} -> {inst_to_int(inst)}")
     return inst
 
 
@@ -64,30 +61,30 @@ def _assemble_imme_inst(op: int, tr: int, imme: int) -> bytearray:
     :return: one instruction to be executed
     """
     inst = _assemble_inst(op, tr)
-    inst[2: 4] = imme.to_bytes(2, 'little')
-    log("%d, %d, %d -> %x", op, tr, imme, _to_int(inst))
+    inst[2: 4] = imme_to_bytes(imme)
+    log("%d, %d, %d -> %x", op, tr, imme, inst_to_int(inst))
     return inst
 
 
 # noinspection PyUnusedLocal
 def encode_no_op(words: [str], op_code: int) -> Tuple[int, int]:
-    return 1, _to_int(_assemble_reg_inst(op_code, 0, 0, 0))
+    return 1, inst_to_int(_assemble_reg_inst(op_code, 0, 0, 0))
 
 
 def encode_reg_imme(words: [str], op_code: int) -> Tuple[int, int]:
-    return 1, _to_int(_assemble_imme_inst(op_code, _to_reg(words[0], target_reg=True), _to_imme(words[1])))
+    return 1, inst_to_int(_assemble_imme_inst(op_code, __str_to_reg(words[0], target_reg=True), __str_to_imme(words[1])))
 
 
 def encode_reg_reg(words: [str], op_code: int) -> Tuple[int, int]:
-    return 1, _to_int(_assemble_reg_inst(op_code, _to_reg(words[0], target_reg=True), _to_reg(words[1], target_reg=False), 0))
+    return 1, inst_to_int(_assemble_reg_inst(op_code, __str_to_reg(words[0], target_reg=True), __str_to_reg(words[1], target_reg=False), 0))
 
 
 def encode_reg(words: [str], op_code: int) -> Tuple[int, int]:
-    return 1, _to_int(_assemble_reg_inst(op_code, _to_reg(words[0], target_reg=True), 0, 0))
+    return 1, inst_to_int(_assemble_reg_inst(op_code, __str_to_reg(words[0], target_reg=True), 0, 0))
 
 
 def encode_imme(words: [str], op_code: int) -> Tuple[int, int]:
-    return 1, _to_int(_assemble_imme_inst(op_code, 0, _to_imme(words[0])))
+    return 1, inst_to_int(_assemble_imme_inst(op_code, 0, __str_to_imme(words[0])))
 
 
 def prepare_mem_data(words: [str]) -> Tuple[int, List[int]]:
@@ -118,7 +115,7 @@ def record_wrapper(records: [Tuple[int, str, int, str, bool]]) -> Callable:
 
     def add_record(words: [str], with_reg: bool, op_key: str, absolute_addr: bool, pc: int) -> Tuple[int, int]:
         if with_reg:
-            records.append((pc, op_key, _to_reg(words[0], target_reg=True), words[1], absolute_addr))
+            records.append((pc, op_key, __str_to_reg(words[0], target_reg=True), words[1], absolute_addr))
         else:
             records.append((pc, op_key, 0, words[0], absolute_addr))
         log("(pc=%x) set relocate item", pc)
@@ -127,7 +124,7 @@ def record_wrapper(records: [Tuple[int, str, int, str, bool]]) -> Callable:
     return add_record
 
 
-def inst_set_wrapper(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]):
+def make_inst_set(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]):
     """
     [ op : [coder, op_code]
     [ pseudo : [coder, with_tr, op_key, is_abs_addr]
@@ -179,5 +176,5 @@ def relocate_label(record: Tuple[int, str, int, str, bool], label_addr: int, ins
     jump_addr = label_addr if is_abs_addr else label_addr - pc
     jump_addr *= 4
     inst = _assemble_inst(inst_set[op][1][0], tr)
-    inst[2:4] = jump_addr.to_bytes(2, 'little', signed=True)
-    return _to_int(inst)
+    inst[2:4] = imme_to_bytes(jump_addr)
+    return inst_to_int(inst)

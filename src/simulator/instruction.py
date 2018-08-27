@@ -1,6 +1,7 @@
 import sys
 
 from src.simulator.cpu import Cpu
+from src.util.converter import inst_to_bytes, imme_to_int, inst_to_int
 from src.util.log import log_err, log
 
 
@@ -23,16 +24,16 @@ def _op_ld(cpu: Cpu, inst: bytearray)->int:
     """
     tr = inst[1]
     sr = inst[2]
-    addr = cpu.reg[sr]
+    addr = cpu.register[sr]
     if addr < 0 or addr > 8192:
-        log_err("segment fault on address 0x%x", cpu.reg[sr])
+        log_err("segment fault on address 0x%x", cpu.register[sr])
 
     if addr >= 4096:
-        log_err("invalid read io(0x%x value=0x%x)!", cpu.reg[tr], addr - 4096)
+        log_err("invalid read io(0x%x value=0x%x)!", cpu.register[tr], addr - 4096)
     else:
-        cpu.reg[tr] = int.from_bytes(cpu.mem[addr: addr + 4], 'little', signed=False)
+        cpu.register[tr] = inst_to_int(cpu.memory[addr: addr + 4])
 
-    log("load from r%d(0x%x value=0x%x) to r%d", sr, addr, cpu.reg[tr], tr)
+    log("load from r%d(0x%x value=0x%x) to r%d", sr, addr, cpu.register[tr], tr)
     return 4
 
 
@@ -43,9 +44,9 @@ def _op_movi(cpu: Cpu, inst: bytearray)->int:
     :param inst: one instruction
     """
     tr = inst[1]
-    imme = int.from_bytes(inst[2: 4], 'little', signed=True)
-    cpu.reg[tr] = imme
-    log("set 0x%x to r%d", cpu.reg[tr], tr)
+    imme = imme_to_int(inst[2: 4])
+    cpu.register[tr] = imme
+    log("set 0x%x to r%d", cpu.register[tr], tr)
     return 4
 
 
@@ -57,19 +58,19 @@ def _op_st(cpu: Cpu, inst: bytearray)->int:
     """
     tr = inst[1]
     sr = inst[2]
-    addr = cpu.reg[sr]
+    addr = cpu.register[sr]
     if addr < 0 or addr > 8192:
-        log_err("segment fault on address 0x%x", cpu.reg[sr])
+        log_err("segment fault on address 0x%x", cpu.register[sr])
 
     if addr >= 4096:
         if addr == 4096:
-            log_err("%c", (cpu.reg[tr].to_bytes(4, 'little')[0]))
+            log_err("%c", (inst_to_bytes(cpu.register[tr])[0]))
         else:
-            log_err("invalid io(0x%x)!" % (cpu.reg[tr]))
+            log_err("invalid io(0x%x)!" % (cpu.register[tr]))
     else:
-        cpu.mem[addr: addr + 4] = cpu.reg[tr].to_bytes(4, 'little')
+        cpu.memory[addr: addr + 4] = inst_to_bytes(cpu.register[tr])
 
-    log("store r%d(0x%x) to 0x%x", tr, cpu.reg[tr], addr)
+    log("store r%d(0x%x) to 0x%x", tr, cpu.register[tr], addr)
     return 4
 
 
@@ -80,8 +81,8 @@ def _op_inc(cpu: Cpu, inst: bytearray)->int:
     :param inst: one instruction
     """
     tr = inst[1]
-    cpu.reg[tr] += 1
-    log("inc r%d to 0x%x", tr, cpu.reg[tr])
+    cpu.register[tr] += 1
+    log("inc r%d to 0x%x", tr, cpu.register[tr])
     return 4
 
 
@@ -92,14 +93,14 @@ def _op_cmpi(cpu: Cpu, inst: bytearray)->int:
     :param inst: one instruction
     """
     tr = inst[1]
-    imme = int.from_bytes(inst[2:4], 'little', signed=True)
+    imme = imme_to_int(inst[2: 4])
     cpu.pstate &= 0
-    if cpu.reg[tr] > imme:
+    if cpu.register[tr] > imme:
         cpu.pstate |= 0x2  # bigger than bit
-    elif cpu.reg[tr] == imme:
+    elif cpu.register[tr] == imme:
         cpu.pstate |= 0x1  # zero bit
 
-    log("compare r%d(0x%x) with 0x%x, pstate=0x%x", tr, cpu.reg[tr], imme, cpu.pstate)
+    log("compare r%d(0x%x) with 0x%x, pstate=0x%x", tr, cpu.register[tr], imme, cpu.pstate)
     return 4
 
 
@@ -109,7 +110,7 @@ def _op_bnz(cpu: Cpu, inst: bytearray)->int:
     :param cpu: Cpu instance
     :param inst: one instruction
     """
-    imme = int.from_bytes(inst[2:4], 'little', signed=True)
+    imme = imme_to_int(inst[2: 4])
     if cpu.pstate & 0x1:
         log("branch untaken")
         return 4
