@@ -27,7 +27,7 @@ def parse_file(lines: [str]):
         words = line.strip()
         if words and (not words.isspace()) and (not words.startswith('#')):
             count, inst = parse_line(words, pc, inst_map)
-            if count == 1:
+            if not isinstance(inst, list):
                 instructions.append(inst)
             else:
                 instructions.extend(inst)
@@ -38,8 +38,8 @@ def parse_file(lines: [str]):
         if r_label not in labels:
             raise KeyError(f"cannot find label {r_label}")
 
-        log("relocate %x (label=%s on 0x%x) with inst(%x)" % (r_pc, r_label, labels[r_label], instructions[r_pc]))
         instructions[r_pc] = relocate_label(record, labels[r_label], inst_map)
+        log("relocate %x (label=%s on 0x%x) with inst(%x)", r_pc, r_label, labels[r_label], instructions[r_pc])
 
     return instructions
 

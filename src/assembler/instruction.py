@@ -87,8 +87,9 @@ def encode_imme(words: [str], op_code: int) -> Tuple[int, int]:
     return 1, inst_to_int(_assemble_imme_inst(op_code, 0, __str_to_imme(words[0])))
 
 
-def prepare_mem_data(words: [str]) -> Tuple[int, List[int]]:
-    return len(words), [int(word, 0) for word in words]
+def prepare_mem_data(words: [str]) -> (Tuple[int, int], Tuple[int, List[int]]):
+    inst_list = [int(word, 0) for word in words]
+    return (1, inst_list[0]) if len(inst_list) == 1 else (len(inst_list), inst_list)
 
 
 def label_wrapper(labels: {str: int}) -> Callable:
