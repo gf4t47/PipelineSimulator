@@ -1,32 +1,32 @@
 import os
 from typing import Tuple, Callable, List
 
-from src.assembler.instruction import make_inst_set, relocate_label
+from src.assembler.instruction import make_inst_map, relocate_label
 from src.util.converter import inst_to_bytes
 from src.util.log import log
 
 
-def parse_line(line: str, pc: int, inst_set: {str: Tuple[Callable, List]}):
+def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]}):
     log(f"encode: {line}")
     words = line.split()
     key = words[0].strip()
-    if key not in inst_set:
+    if key not in inst_map:
         raise KeyError(f"No operation {key} in instruction set")
-    encoder, info = inst_set[key]
-    return encoder(words[1::], *info, pc)
+    encoder, require_pc, info = inst_map[key]
+    return encoder(words[1::], *info, pc) if require_pc else encoder(words[1::], *info)
 
 
 def parse_file(lines: [str]):
     pc = 0
     labels = {}
     records = []
-    inst_set = make_inst_set(labels, records)
+    inst_map = make_inst_map(labels, records)
 
     instructions = []
     for line in lines:
         words = line.strip()
         if words and (not words.isspace()) and (not words.startswith('#')):
-            count, inst = parse_line(words, pc, inst_set)
+            count, inst = parse_line(words, pc, inst_map)
             if count == 1:
                 instructions.append(inst)
             else:
@@ -39,18 +39,18 @@ def parse_file(lines: [str]):
             raise KeyError(f"cannot find label {r_label}")
 
         log("relocate %x (label=%s on 0x%x) with inst(%x)" % (r_pc, r_label, labels[r_label], instructions[r_pc]))
-        instructions[r_pc] = relocate_label(record, labels[r_label], inst_set)
+        instructions[r_pc] = relocate_label(record, labels[r_label], inst_map)
 
     return instructions
 
 
-def assemble(path: str):
+def assemble(path: str, extn='.bin'):
     f = open(path)
     instructions = parse_file(f.readlines())
     f.close()
 
     filename, _ = os.path.splitext(path)
-    of = open(filename + '.exe', "w+b")
+    of = open(filename + extn, "w+b")
     assert of
 
     for inst in instructions:

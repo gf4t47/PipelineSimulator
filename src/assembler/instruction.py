@@ -124,7 +124,7 @@ def record_wrapper(records: [Tuple[int, str, int, str, bool]]) -> Callable:
     return add_record
 
 
-def make_inst_set(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]):
+def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]])->{str: Tuple[Callable, bool, List]}:
     """
     [ op : [coder, op_code]
     [ pseudo : [coder, with_tr, op_key, is_abs_addr]
@@ -148,33 +148,33 @@ def make_inst_set(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     bnzl <label>            #label version of bnz
     movil <Tr> <label>      #label version of movi
     """
-    inst_set = {
-        'nop': (encode_no_op, [0]),
-        'ld': (encode_reg_reg, [1]),
-        'movi': (encode_reg_imme, [2]),
-        'st': (encode_reg_reg, [3]),
-        'inc': (encode_reg, [4]),
-        'cmpi': (encode_reg_imme, [5]),
-        'bnz': (encode_imme, [6]),
-        'halt': (encode_no_op, [7]),
-        'data': (prepare_mem_data, []),
-        'label': (label_wrapper(labels), []),
-        'bnzl': (record_wrapper(records), [False, 'bnz', False]),
-        'movil': (record_wrapper(records), [True, 'movi', True])
+    inst_map = {
+        'nop': (encode_no_op, False, [0]),
+        'ld': (encode_reg_reg, False, [1]),
+        'movi': (encode_reg_imme, False, [2]),
+        'st': (encode_reg_reg, False, [3]),
+        'inc': (encode_reg, False, [4]),
+        'cmpi': (encode_reg_imme, False, [5]),
+        'bnz': (encode_imme, False, [6]),
+        'halt': (encode_no_op, False, [7]),
+        'data': (prepare_mem_data, False, []),
+        'label': (label_wrapper(labels), True, []),
+        'bnzl': (record_wrapper(records), True, [False, 'bnz', False]),
+        'movil': (record_wrapper(records), True, [True, 'movi', True])
     }
 
-    return inst_set
+    return inst_map
 
 
-def relocate_label(record: Tuple[int, str, int, str, bool], label_addr: int, inst_set: {str: Tuple[Callable, List[int]]}):
+def relocate_label(record: Tuple[int, str, int, str, bool], label_addr: int, inst_map: {str: Tuple[Callable, bool, List[int]]}):
     """
-    :param inst_set: op_key -> op_code
+    :param inst_map: op_key -> op_code
     :param record: (pc, op, tr, label_name, absolute_flag)
     :param label_addr:
     """
     pc, op, tr, label, is_abs_addr = record
     jump_addr = label_addr if is_abs_addr else label_addr - pc
     jump_addr *= 4
-    inst = _assemble_inst(inst_set[op][1][0], tr)
-    inst[2:4] = imme_to_bytes(jump_addr)
+    _, _, info = inst_map[op]
+    inst = _assemble_imme_inst(info[0], tr, jump_addr)
     return inst_to_int(inst)

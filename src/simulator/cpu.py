@@ -1,9 +1,9 @@
-from src.simulator.instruction import inst_list
+from src.simulator.instruction import inst_set
 from src.util.log import log_err
 
 
 class Cpu:
-    def __init__(self, mem: bytearray):
+    def __init__(self, mem: bytearray)->None:
         self._pc = 0
         self._reg = [0] * 12
         self._pstate = 0
@@ -33,7 +33,7 @@ class Cpu:
     def memory(self)->bytearray:
         return self._mem
 
-    def fetch(self)->bytearray:
+    def _fetch(self)->bytearray:
         """
         get one instruction from memory
         :return: instruction
@@ -42,7 +42,7 @@ class Cpu:
             log_err(f"sys abort due to invalid pc: {self.pc}")
 
         op = self.memory[self.pc]
-        if op >= len(inst_list):
+        if op >= len(inst_set):
             log_err(f"sys abort due to invalid inst op: {op}")
 
         return self.memory[self.pc: self.pc + 4]
@@ -55,7 +55,8 @@ class Cpu:
         """
         count_step = 0
         while count_step < max_step:
-            inst = self.fetch()
-            self.pc += inst_list[inst[0]][1](self, inst)
+            inst = self._fetch()
+            _, inst_handler = inst_set[inst[0]]
+            self.pc += inst_handler(self, inst)
             count_step += 1
         log_err(f"cpu too hot ({max_step}), exit")
