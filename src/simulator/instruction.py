@@ -1,25 +1,24 @@
 import sys
 
-from src.simulator.cpu import Cpu
 from src.util.converter import inst_to_bytes, imme_to_int, inst_to_int
 from src.util.log import log_err, log
 
 
 # noinspection PyUnusedLocal
-def _op_nop(cpu: Cpu, inst: bytearray)->int:
+def _op_nop(cpu: 'Cpu', inst: bytearray)->int:
     """
     nop                     no operation
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     log("nop")
     return 4
 
 
-def _op_ld(cpu: Cpu, inst: bytearray)->int:
+def _op_ld(cpu: 'Cpu', inst: bytearray)->int:
     """
     ld <Tr> <Ar>            load
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     tr = inst[1]
@@ -37,10 +36,10 @@ def _op_ld(cpu: Cpu, inst: bytearray)->int:
     return 4
 
 
-def _op_movi(cpu: Cpu, inst: bytearray)->int:
+def _op_movi(cpu: 'Cpu', inst: bytearray)->int:
     """
     movi <Tr> <imme>        move imme
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     tr = inst[1]
@@ -50,10 +49,10 @@ def _op_movi(cpu: Cpu, inst: bytearray)->int:
     return 4
 
 
-def _op_st(cpu: Cpu, inst: bytearray)->int:
+def _op_st(cpu: 'Cpu', inst: bytearray)->int:
     """
     st <Dr> <Ar>            store data to address
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     tr = inst[1]
@@ -74,10 +73,10 @@ def _op_st(cpu: Cpu, inst: bytearray)->int:
     return 4
 
 
-def _op_inc(cpu: Cpu, inst: bytearray)->int:
+def _op_inc(cpu: 'Cpu', inst: bytearray)->int:
     """
     inc <Tr>                Tr+1
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     tr = inst[1]
@@ -86,10 +85,10 @@ def _op_inc(cpu: Cpu, inst: bytearray)->int:
     return 4
 
 
-def _op_cmpi(cpu: Cpu, inst: bytearray)->int:
+def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
     """
     cmpi <Sr>, <immu>       compare with imme
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     tr = inst[1]
@@ -104,10 +103,10 @@ def _op_cmpi(cpu: Cpu, inst: bytearray)->int:
     return 4
 
 
-def _op_bnz(cpu: Cpu, inst: bytearray)->int:
+def _op_bnz(cpu: 'Cpu', inst: bytearray)->int:
     """
     bz <immu>               relative branch to address
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     imme = imme_to_int(inst[2: 4])
@@ -120,10 +119,10 @@ def _op_bnz(cpu: Cpu, inst: bytearray)->int:
 
 
 # noinspection PyUnusedLocal
-def _op_halt(cpu: Cpu, inst: bytearray)->None:
+def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
     """
     halt                    halt the cpu
-    :param cpu: Cpu instance
+    :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     log("halt")
