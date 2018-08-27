@@ -1,3 +1,134 @@
+import sys
+
+from src.simulator.cpu import Cpu
+from src.util.log import log_err, log
+
+
+# noinspection PyUnusedLocal
+def _op_nop(cpu: Cpu, inst: bytearray)->int:
+    """
+    nop                     no operation
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    log("nop")
+    return 4
+
+
+def _op_ld(cpu: Cpu, inst: bytearray)->int:
+    """
+    ld <Tr> <Ar>            load
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    tr = inst[1]
+    sr = inst[2]
+    addr = cpu.reg[sr]
+    if addr < 0 or addr > 8192:
+        log_err("segment fault on address 0x%x", cpu.reg[sr])
+
+    if addr >= 4096:
+        log_err("invalid read io(0x%x value=0x%x)!", cpu.reg[tr], addr - 4096)
+    else:
+        cpu.reg[tr] = int.from_bytes(cpu.mem[addr: addr + 4], 'little', signed=False)
+
+    log("load from r%d(0x%x value=0x%x) to r%d", sr, addr, cpu.reg[tr], tr)
+    return 4
+
+
+def _op_movi(cpu: Cpu, inst: bytearray)->int:
+    """
+    movi <Tr> <imme>        move imme
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    tr = inst[1]
+    imme = int.from_bytes(inst[2: 4], 'little', signed=True)
+    cpu.reg[tr] = imme
+    log("set 0x%x to r%d", cpu.reg[tr], tr)
+    return 4
+
+
+def _op_st(cpu: Cpu, inst: bytearray)->int:
+    """
+    st <Dr> <Ar>            store data to address
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    tr = inst[1]
+    sr = inst[2]
+    addr = cpu.reg[sr]
+    if addr < 0 or addr > 8192:
+        log_err("segment fault on address 0x%x", cpu.reg[sr])
+
+    if addr >= 4096:
+        if addr == 4096:
+            log_err("%c", (cpu.reg[tr].to_bytes(4, 'little')[0]))
+        else:
+            log_err("invalid io(0x%x)!" % (cpu.reg[tr]))
+    else:
+        cpu.mem[addr: addr + 4] = cpu.reg[tr].to_bytes(4, 'little')
+
+    log("store r%d(0x%x) to 0x%x", tr, cpu.reg[tr], addr)
+    return 4
+
+
+def _op_inc(cpu: Cpu, inst: bytearray)->int:
+    """
+    inc <Tr>                Tr+1
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    tr = inst[1]
+    cpu.reg[tr] += 1
+    log("inc r%d to 0x%x", tr, cpu.reg[tr])
+    return 4
+
+
+def _op_cmpi(cpu: Cpu, inst: bytearray)->int:
+    """
+    cmpi <Sr>, <immu>       compare with imme
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    tr = inst[1]
+    imme = int.from_bytes(inst[2:4], 'little', signed=True)
+    cpu.pstate &= 0
+    if cpu.reg[tr] > imme:
+        cpu.pstate |= 0x2  # bigger than bit
+    elif cpu.reg[tr] == imme:
+        cpu.pstate |= 0x1  # zero bit
+
+    log("compare r%d(0x%x) with 0x%x, pstate=0x%x", tr, cpu.reg[tr], imme, cpu.pstate)
+    return 4
+
+
+def _op_bnz(cpu: Cpu, inst: bytearray)->int:
+    """
+    bz <immu>               relative branch to address
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    imme = int.from_bytes(inst[2:4], 'little', signed=True)
+    if cpu.pstate & 0x1:
+        log("branch untaken")
+        return 4
+    else:
+        log("branch to %x", imme)
+        return imme
+
+
+# noinspection PyUnusedLocal
+def _op_halt(cpu: Cpu, inst: bytearray)->None:
+    """
+    halt                    halt the cpu
+    :param cpu: Cpu instance
+    :param inst: one instruction
+    """
+    log("halt")
+    sys.exit(0)
+
+
 """
 ld <Tr> <Ar>            #load
 movi <Tr> <imme>        #move imme
@@ -8,92 +139,13 @@ bz <immu>               #relative branch to address
 nop                     #no operation
 halt                    #halt the cpu
 """
-import sys
-
-from src.util.log import log_err, log
-
-
-def op_nop(cpu, inst):
-    log("nop")
-    return 4
-
-
-def op_ld(cpu, inst):
-    tr = inst[1]
-    sr = inst[2]
-    addr = cpu.reg[sr]
-    if addr < 0 or addr > 8192:
-        log_err("segment fault on address 0x%x" % (cpu.reg[sr]), quited=True)
-
-    if addr >= 4096:
-        print("invalid read io(0x%x value=0x%x)!" % (cpu.reg[tr], addr - 4096))
-    else:
-        cpu.reg[tr] = int.from_bytes(cpu.mem[addr:addr + 4], 'little', signed=False)
-
-    log("load from r%d(0x%x value=0x%x) to r%d" % (sr, addr, cpu.reg[tr], tr))
-
-    return 4
-
-
-def op_movi(cpu, inst):
-    tr = inst[1]
-    imme = int.from_bytes(inst[2:4], 'little', signed=True)
-    cpu.reg[tr] = imme
-    log("set 0x%x to r%d" % (cpu.reg[tr], tr))
-    return 4
-
-
-def op_st(cpu, inst):
-    tr = inst[1]
-    sr = inst[2]
-    addr = cpu.reg[sr]
-    if addr < 0 or addr > 8192:
-        log_err("segment fault on address 0x%x" % (cpu.reg[sr]), quited=True)
-
-    if addr >= 4096:
-        if addr == 4096:
-            print("%c" % (cpu.reg[tr].to_bytes(4, 'little')[0]), end='')
-            # print("%x "%(cpu.reg[tr].to_bytes(4, 'little')[0]), end='')
-        else:
-            print("invalid io(0x%x)!" % (cpu.reg[tr]))
-    else:
-        cpu.mem[addr:addr + 4] = cpu.reg[tr].to_bytes(4, 'little')
-
-    log("store r%d(0x%x) to 0x%x" % (tr, cpu.reg[tr], addr))
-
-    return 4
-
-
-def op_inc(cpu, inst):
-    tr = inst[1]
-    cpu.reg[tr] += 1
-    log("inc r%d to 0x%x" % (tr, cpu.reg[tr]))
-    return 4
-
-
-def op_cmpi(cpu, inst):
-    tr = inst[1]
-    imme = int.from_bytes(inst[2:4], 'little', signed=True)
-    cpu.pstate &= 0
-    if cpu.reg[tr] > imme:
-        cpu.pstate |= 0x2  # bigger than bit
-    elif cpu.reg[tr] == imme:
-        cpu.pstate |= 0x1  # zero bit
-
-    log("compare r%d(0x%x) with 0x%x, pstate=0x%x" % (tr, cpu.reg[tr], imme, cpu.pstate))
-    return 4
-
-
-def op_bnz(cpu, inst):
-    imme = int.from_bytes(inst[2:4], 'little', signed=True)
-    if cpu.pstate & 0x1:
-        log("branch untaken")
-        return 4
-    else:
-        log("branch to %x" % imme)
-        return imme
-
-
-def op_halt(cpu, inst):
-    log("halt")
-    sys.exit(0)
+inst_list = [
+    ['nop', _op_nop],       # instruction[0] == 0
+    ['ld', _op_ld],         # instruction[0] == 1
+    ['movi', _op_movi],     # instruction[0] == 2
+    ['st', _op_st],         # instruction[0] == 3
+    ['inc', _op_inc],       # instruction[0] == 4
+    ['cmpi', _op_cmpi],     # instruction[0] == 5
+    ['bnz', _op_bnz],       # instruction[0] == 6
+    ['halt', _op_halt]      # instruction[0] == 7
+]

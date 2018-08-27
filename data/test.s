@@ -1,4 +1,4 @@
-#test assample file for simple cpu
+# test assemble file for simple cpu
 
 movi 1 0
 movil 2 data_addr
