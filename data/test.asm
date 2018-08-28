@@ -22,4 +22,4 @@ data 9 0x12345678 0x12 0x33
 data 1
 
 label io_addr
-data 4096
+data 4095

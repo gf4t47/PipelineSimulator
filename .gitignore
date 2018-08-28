@@ -1,6 +1,4 @@
 
-\.idea/workspace\.xml
-\.idea/misc\.xml
-\.idea/PipelineSimulator\.iml
-
+/test/**/\.*_cache/
+/\.idea/
 /**/__pycache__/
