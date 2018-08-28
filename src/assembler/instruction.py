@@ -135,8 +135,8 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     """
 
     """
-    ld <Tr> <Ar>            #load
-    movi <Tr> <imme>        #move imme
+    ld <Tr> <Ar>            #load data from address
+    movi <Tr> <imme>        #move imme to reg
     st <Dr> <Ar>            #store data to address
     inc <Tr>                #Tr+1
     cmpi <Tr>, <immu>       #compare with imme
