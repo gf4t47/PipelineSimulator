@@ -17,7 +17,7 @@ def _op_nop(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_ld(cpu: 'Cpu', inst: bytearray)->int:
     """
-    ld <Tr> <Ar>            load
+    ld <Tr> <Ar>            load data from address
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -38,7 +38,7 @@ def _op_ld(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_movi(cpu: 'Cpu', inst: bytearray)->int:
     """
-    movi <Tr> <imme>        move imme
+    movi <Tr> <imme>        move imme to reg
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -130,8 +130,8 @@ def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
 
 
 """
-ld <Tr> <Ar>            #load
-movi <Tr> <imme>        #move imme
+ld <Tr> <Ar>            #load data from address
+movi <Tr> <imme>        #move imme to reg
 st <Dr> <Ar>            #store data to address
 inc <Tr>                #Tr+1
 cmpi <Sr>, <immu>       #compare with imme
