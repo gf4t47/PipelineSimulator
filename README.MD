@@ -32,10 +32,10 @@ word wide: 32bit, little endian
         6       bnz
         7       halt
 
-    bytes[1] output_register
-    bytes[2] input_register1
-    bytes[3] input_register2
-    bytes[2,3] imme
+    bytes[1] output register
+    bytes[2] input register 1
+    bytes[3] input register 2
+    bytes[2,3] immediate value
 ### memory space
     0-4095: memory
     4096-8192: io space
