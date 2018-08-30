@@ -139,8 +139,8 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     movi <Tr> <imme>        #move imme to reg
     st <Dr> <Ar>            #store data to address
     inc <Tr>                #Tr+1
-    cmpi <Tr>, <immu>       #compare with imme
-    bnz <immu>              #relative branch to address
+    cmpi <Tr>, <imme>       #compare with imme
+    bnz <imme>              #relative branch to address
     nop                     #no operation
     halt                    #halt the cpu
     data <imme_byte>...     #data definition

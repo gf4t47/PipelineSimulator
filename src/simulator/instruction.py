@@ -87,7 +87,7 @@ def _op_inc(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
     """
-    cmpi <Sr>, <immu>       compare with imme
+    cmpi <Sr>, <imme>       compare with imme
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -105,7 +105,7 @@ def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_bnz(cpu: 'Cpu', inst: bytearray)->int:
     """
-    bz <immu>               relative branch to address
+    bz <imme>               relative branch to address
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -134,8 +134,8 @@ ld <Tr> <Ar>            #load data from address
 movi <Tr> <imme>        #move imme to reg
 st <Dr> <Ar>            #store data to address
 inc <Tr>                #Tr+1
-cmpi <Sr>, <immu>       #compare with imme
-bz <immu>               #relative branch to address
+cmpi <Sr>, <imme>       #compare with imme
+bz <imme>               #relative branch to address
 nop                     #no operation
 halt                    #halt the cpu
 """
