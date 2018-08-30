@@ -1,18 +1,22 @@
 # test assemble file for simple cpu
 
+nop
 movi 1 0
 movil 2 data_addr
 movil 3 io_addr
 ld 3 3
 
 label loop
+nop
 ld 4 2
 st 4 3
 inc 2
 inc 1
-cmpi 1 10 
+cmpi 1 10
+nop
 bnzl loop
 
+nop
 halt
 
 label data_addr
