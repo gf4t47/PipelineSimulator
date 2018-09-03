@@ -32,14 +32,14 @@ bytes[0] operation code:
 
 |value  |operation|
 |:------|:--------|
-| 0     | nop
-| 1     | ld
-| 2     | movi
-| 3     | st
-| 4     | inc
-| 5     | cmpi
-| 6     | bnz
-| 7     | halt
+| 0     | nop     |
+| 1     | ld      |
+| 2     | movi    |
+| 3     | st      |
+| 4     | inc     |
+| 5     | cmpi    |
+| 6     | bnz     |
+| 7     | halt    |
 
 bytes[1] output register
 bytes[2] input register 1
