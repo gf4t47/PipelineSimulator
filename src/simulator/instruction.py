@@ -130,14 +130,14 @@ def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
 
 
 """
-ld <Tr> <Ar>            #load data from address
-movi <Tr> <imme>        #move imme to reg
-st <Dr> <Ar>            #store data to address
-inc <Tr>                #Tr+1
-cmpi <Sr>, <imme>       #compare with imme
-bz <imme>               #relative branch to address
-nop                     #no operation
-halt                    #halt the cpu
+ld <Tr> <Ar>            load data from memory (address hold by Address Register) to Temporary Register
+movi <Tr> <imme>        move immediate value to Temporary Register
+st <Dr> <Ar>            store data from Data Register to memory (address hold by Address Register)
+inc <Tr>                Temporary Register += 1
+cmpi <Sr>, <imme>       compare Temporary Register with immediate value
+bnz <imme>              relative branch to address if State Register is non-zero
+nop                     no operation
+halt                    halt the cpu
 """
 inst_set = [
     ('nop', _op_nop),       # instruction[0] == 0

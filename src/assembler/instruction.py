@@ -135,19 +135,18 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     """
 
     """
-    ld <Tr> <Ar>            #load data from address
-    movi <Tr> <imme>        #move imme to reg
-    st <Dr> <Ar>            #store data to address
-    inc <Tr>                #Tr+1
-    cmpi <Tr>, <imme>       #compare with imme
-    bnz <imme>              #relative branch to address
-    nop                     #no operation
-    halt                    #halt the cpu
-    data <imme_byte>...     #data definition
-    ldl <Tr> <label>        #label version of ld
-    label <name>            #define label
-    bnzl <label>            #label version of bnz
-    movil <Tr> <label>      #label version of movi
+    ld <Tr> <Ar>            load data from memory (address hold by Address Register) to Temporary Register
+    movi <Tr> <imme>        move immediate value to Temporary Register
+    st <Dr> <Ar>            store data from Data Register to memory (address hold by Address Register)
+    inc <Tr>                Temporary Register += 1
+    cmpi <Tr>, <imme>       compare Temporary Register with immediate value
+    bnz <imme>              relative branch to address if State Register is non-zero
+    nop                     no operation
+    halt                    halt the cpu
+    data <imme_byte>...     define data
+    label <name>            define label
+    bnzl <label>            label version of bnz
+    movil <Tr> <label>      label version of movi
     """
     inst_map = {
         'nop': (encode_no_op, False, [0]),
