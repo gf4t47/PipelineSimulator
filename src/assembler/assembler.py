@@ -6,9 +6,13 @@ from src.util.converter import inst_to_bytes
 from src.util.log import log
 
 
+COMMENT_SYMBOL = ';'
+
+
 def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]}):
     log(f"encode: {line}")
-    words = line.split()
+    code = line.split(COMMENT_SYMBOL, 1)[0]  # remove inline comments
+    words = code.split()
     key = words[0].strip()
     if key not in inst_map:
         raise KeyError(f"No operation {key} in instruction set")
@@ -25,7 +29,7 @@ def parse_file(lines: [str]):
     instructions = []
     for line in lines:
         words = line.strip()
-        if words and (not words.isspace()) and (not words.startswith('#')):
+        if words and (not words.isspace()) and (not words.startswith(COMMENT_SYMBOL)):
             count, inst = parse_line(words, pc, inst_map)
             if not isinstance(inst, list):
                 instructions.append(inst)

@@ -1,14 +1,16 @@
 import sys
 
-from src.simulator.cpu import DATA_MEMORY_BOUNDARY
 from src.util.converter import inst_to_bytes, imme_to_int, inst_to_int
 from src.util.log import log_err, log
+
+
+DATA_MEMORY_BOUNDARY = 4096
 
 
 # noinspection PyUnusedLocal
 def _op_nop(cpu: 'Cpu', inst: bytearray)->int:
     """
-    nop                     no operation
+    nop
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -16,9 +18,9 @@ def _op_nop(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_ld(cpu: 'Cpu', inst: bytearray)->int:
+def _op_lea(cpu: 'Cpu', inst: bytearray)->int:
     """
-    ld <Tr> <Ar>            load data from address
+    lea <Tr> <Ar>
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -39,7 +41,7 @@ def _op_ld(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_movi(cpu: 'Cpu', inst: bytearray)->int:
     """
-    movi <Tr> <imme>        move imme to reg
+    mov <Tr> <imme>
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -52,7 +54,7 @@ def _op_movi(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_st(cpu: 'Cpu', inst: bytearray)->int:
     """
-    st <Dr> <Ar>            store data to address
+    st <Dr> <Ar>
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -74,21 +76,22 @@ def _op_st(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_inc(cpu: 'Cpu', inst: bytearray)->int:
+def _op_add(cpu: 'Cpu', inst: bytearray)->int:
     """
-    inc <Tr>                Tr+1
+    add <Tr> <imme>
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
     tr = inst[1]
-    cpu.register[tr] += 1
-    log("inc r%d to 0x%x", tr, cpu.register[tr])
+    imme = imme_to_int(inst[2: 4])
+    cpu.register[tr] += imme
+    log("add r%d to 0x%x", tr, cpu.register[tr])
     return 4
 
 
 def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
     """
-    cmpi <Sr>, <imme>       compare with imme
+    cmpi <Sr>, <imme>
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -106,7 +109,7 @@ def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
 
 def _op_bnz(cpu: 'Cpu', inst: bytearray)->int:
     """
-    bz <imme>               relative branch to address
+    bz <imme>
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -122,7 +125,7 @@ def _op_bnz(cpu: 'Cpu', inst: bytearray)->int:
 # noinspection PyUnusedLocal
 def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
     """
-    halt                    halt the cpu
+    halt
     :param cpu: 'Cpu' instance
     :param inst: one instruction
     """
@@ -131,10 +134,10 @@ def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
 
 
 """
-ld <Tr> <Ar>            load data from memory (address hold by Address Register) to Temporary Register
-movi <Tr> <imme>        move immediate value to Temporary Register
+lea <Tr> <Ar>           load data from memory (address hold by Address Register) to Temporary Register
+mov <Tr> <imme>         move immediate value to Temporary Register
 st <Dr> <Ar>            store data from Data Register to memory (address hold by Address Register)
-inc <Tr>                Temporary Register += 1
+add <Tr> <imme>         add immediate value to Temporary Register
 cmpi <Sr>, <imme>       compare Temporary Register with immediate value, store result in Flag Register
 bnz <imme>              relative branch to address if Flag Register is non-zero
 nop                     no operation
@@ -142,10 +145,10 @@ halt                    halt the cpu
 """
 inst_set = [
     ('nop', _op_nop),       # instruction[0] == 0
-    ('ld', _op_ld),         # instruction[0] == 1
-    ('movi', _op_movi),     # instruction[0] == 2
+    ('lea', _op_lea),       # instruction[0] == 1
+    ('mov', _op_movi),      # instruction[0] == 2
     ('st', _op_st),         # instruction[0] == 3
-    ('inc', _op_inc),       # instruction[0] == 4
+    ('add', _op_add),       # instruction[0] == 4
     ('cmpi', _op_cmpi),     # instruction[0] == 5
     ('bnz', _op_bnz),       # instruction[0] == 6
     ('halt', _op_halt)      # instruction[0] == 7

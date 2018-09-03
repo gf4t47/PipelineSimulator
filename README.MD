@@ -10,10 +10,10 @@ r15-st-cpu state: bit0-zero bit1-bigger than
 ```
 ### instruction set
 ```
-ld <Tr> <Ar>       # load data from memory (address hold by Address Register) to Temporary Register
-movi <Tr> <imme>   # move immediate value to Temporary Register
+lea <Tr> <Ar>      # load data from memory (address hold by Address Register) to Temporary Register
+mov <Tr> <imme>    # move immediate value to Temporary Register
 st <Dr> <Ar>       # store data from Data Register to memory (address hold by Address Register)
-inc <Tr>           # Temporary Register += 1
+add <Tr> <imme>    # Add immediate value to Temporary Register
 cmpi <Tr> <imme>   # compare Temporary Register with immediate value, store result in Flag  Register
 bnz <imme>         # relative branch to address if Flag Register is non-zero
 nop                # no operation
@@ -24,7 +24,7 @@ halt               # halt the cpu
 data <imme_byte>...     # define data
 label <name>            # define label
 bnzl <label>            # label version of bnz
-movil <label>           # label version of movi
+movl <label>            # label version of mov
 ```
 ### instruction encoding
 ```
@@ -33,10 +33,10 @@ bytes[0] operation code:
 |value  |operation|
 |:------|:--------|
 | 0     | nop     |
-| 1     | ld      |
-| 2     | movi    |
+| 1     | lea     |
+| 2     | mov     |
 | 3     | st      |
-| 4     | inc     |
+| 4     | add     |
 | 5     | cmpi    |
 | 6     | bnz     |
 | 7     | halt    |

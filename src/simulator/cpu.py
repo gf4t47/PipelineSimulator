@@ -1,8 +1,5 @@
-from src.simulator.instruction import inst_set
+from src.simulator.instruction import inst_set, DATA_MEMORY_BOUNDARY
 from src.util.log import log_err
-
-
-DATA_MEMORY_BOUNDARY = 4096
 
 
 class Cpu:

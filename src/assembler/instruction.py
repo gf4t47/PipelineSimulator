@@ -135,10 +135,10 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     """
 
     """
-    ld <Tr> <Ar>            load data from memory (address hold by Address Register) to Temporary Register
-    movi <Tr> <imme>        move immediate value to Temporary Register
+    lea <Tr> <Ar>           load data from memory (address hold by Address Register) to Temporary Register
+    mov <Tr> <imme>         move immediate value to Temporary Register
     st <Dr> <Ar>            store data from Data Register to memory (address hold by Address Register)
-    inc <Tr>                Temporary Register += 1
+    add <Tr> <imme>         add immediate value to Temporary Register
     cmpi <Tr>, <imme>       compare Temporary Register with immediate value, store result in Flag Register
     bnz <imme>              relative branch to address if Flag Register is non-zero
     nop                     no operation
@@ -146,21 +146,21 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     data <imme_byte>...     define data
     label <name>            define label
     bnzl <label>            label version of bnz
-    movil <Tr> <label>      label version of movi
+    movl <Tr> <label>       label version of mov
     """
     inst_map = {
         'nop': (encode_no_op, False, [0]),
-        'ld': (encode_reg_reg, False, [1]),
-        'movi': (encode_reg_imme, False, [2]),
+        'lea': (encode_reg_reg, False, [1]),
+        'mov': (encode_reg_imme, False, [2]),
         'st': (encode_reg_reg, False, [3]),
-        'inc': (encode_reg, False, [4]),
+        'add': (encode_reg_imme, False, [4]),
         'cmpi': (encode_reg_imme, False, [5]),
         'bnz': (encode_imme, False, [6]),
         'halt': (encode_no_op, False, [7]),
         'data': (prepare_mem_data, False, []),
         'label': (label_wrapper(labels), True, []),
         'bnzl': (record_wrapper(records), True, [False, 'bnz', False]),
-        'movil': (record_wrapper(records), True, [True, 'movi', True])
+        'movl': (record_wrapper(records), True, [True, 'mov', True])
     }
 
     return inst_map
