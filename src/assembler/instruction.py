@@ -139,8 +139,8 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     movi <Tr> <imme>        move immediate value to Temporary Register
     st <Dr> <Ar>            store data from Data Register to memory (address hold by Address Register)
     inc <Tr>                Temporary Register += 1
-    cmpi <Tr>, <imme>       compare Temporary Register with immediate value
-    bnz <imme>              relative branch to address if State Register is non-zero
+    cmpi <Tr>, <imme>       compare Temporary Register with immediate value, store result in Flag Register
+    bnz <imme>              relative branch to address if Flag Register is non-zero
     nop                     no operation
     halt                    halt the cpu
     data <imme_byte>...     define data

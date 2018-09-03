@@ -1,5 +1,6 @@
 import sys
 
+from src.simulator.cpu import DATA_MEMORY_BOUNDARY
 from src.util.converter import inst_to_bytes, imme_to_int, inst_to_int
 from src.util.log import log_err, log
 
@@ -24,11 +25,11 @@ def _op_ld(cpu: 'Cpu', inst: bytearray)->int:
     tr = inst[1]
     sr = inst[2]
     addr = cpu.register[sr]
-    if addr < 0 or addr > 8192:
+    if addr < 0 or addr > DATA_MEMORY_BOUNDARY * 2:
         log_err("segment fault on address 0x%x", cpu.register[sr])
 
-    if addr >= 4096:
-        log_err("invalid read io(0x%x value=0x%x)!", cpu.register[tr], addr - 4096)
+    if addr >= DATA_MEMORY_BOUNDARY:
+        log_err("invalid read io(0x%x value=0x%x)!", cpu.register[tr], addr - DATA_MEMORY_BOUNDARY)
     else:
         cpu.register[tr] = inst_to_int(cpu.memory[addr: addr + 4])
 
@@ -61,8 +62,8 @@ def _op_st(cpu: 'Cpu', inst: bytearray)->int:
     if addr < 0 or addr > 8192:
         log_err("segment fault on address 0x%x", cpu.register[sr])
 
-    if addr >= 4096:
-        if addr == 4096:
+    if addr >= DATA_MEMORY_BOUNDARY:
+        if addr == DATA_MEMORY_BOUNDARY:
             log_err("invalid addr(%c)", (inst_to_bytes(cpu.register[tr])[0]))
         else:
             log_err("invalid io(0x%x)!", (cpu.register[tr]))
@@ -134,8 +135,8 @@ ld <Tr> <Ar>            load data from memory (address hold by Address Register)
 movi <Tr> <imme>        move immediate value to Temporary Register
 st <Dr> <Ar>            store data from Data Register to memory (address hold by Address Register)
 inc <Tr>                Temporary Register += 1
-cmpi <Sr>, <imme>       compare Temporary Register with immediate value
-bnz <imme>              relative branch to address if State Register is non-zero
+cmpi <Sr>, <imme>       compare Temporary Register with immediate value, store result in Flag Register
+bnz <imme>              relative branch to address if Flag Register is non-zero
 nop                     no operation
 halt                    halt the cpu
 """

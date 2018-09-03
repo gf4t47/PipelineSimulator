@@ -2,6 +2,9 @@ from src.simulator.instruction import inst_set
 from src.util.log import log_err
 
 
+DATA_MEMORY_BOUNDARY = 4096
+
+
 class Cpu:
     def __init__(self, mem: bytearray)->None:
         self._pc = 0
@@ -38,7 +41,7 @@ class Cpu:
         get one instruction from memory
         :return: instruction
         """
-        if self.pc < 0 or self.pc > 4096:
+        if self.pc < 0 or self.pc > DATA_MEMORY_BOUNDARY:
             log_err(f"sys abort due to invalid pc: {self.pc}")
 
         op = self.memory[self.pc]

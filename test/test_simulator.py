@@ -1,4 +1,4 @@
-from src.os.operating_system import execute
+from src.os.os import execute
 
 
 def test_simulator():
