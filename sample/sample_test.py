@@ -1,7 +1,7 @@
 import pytest
 
 from src.assembler.assembler import assemble
-from src.os.os import execute
+from src.index import execute
 
 
 @pytest.mark.parametrize("assemble_name, expected", [
