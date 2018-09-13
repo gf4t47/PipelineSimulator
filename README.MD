@@ -21,31 +21,30 @@ halt               # halt the cpu
 ```
 ### pseudo code
 ```
-data <imme_byte>...     # define data
+data <imme>...          # define data (could be multiple data in one line)
 label <name>            # define label
-bnzl <label>            # label version of bnz
-movl <label>            # label version of mov
+bnzl <label>            # label version of bnz, labeled address as immediate value
+movl <label>            # label version of mov, labeled address as immediate value
 ```
 ### instruction encoding
 ```
-bytes[0] operation code:
-
-|value  |operation|
-|:------|:--------|
-| 0     | nop     |
-| 1     | lea     |
-| 2     | mov     |
-| 3     | st      |
-| 4     | add     |
-| 5     | cmpi    |
-| 6     | bnz     |
-| 7     | halt    |
-
+bytes[0] operation code
 bytes[1] output register
 bytes[2] input register 1
 bytes[3] input register 2
 bytes[2,3] immediate value
 ```
+#### operation encoding:
+|bytes[0]|operation|
+|:-------|:-------|
+| 0      | nop     |
+| 1      | lea     |
+| 2      | mov     |
+| 3      | st      |
+| 4      | add     |
+| 5      | cmpi    |
+| 6      | bnz     |
+| 7      | halt    |
 ### memory space
 ```
 0-4095: memory

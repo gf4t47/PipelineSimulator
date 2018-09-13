@@ -145,8 +145,8 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     halt                    halt the cpu
     data <imme_byte>...     define data
     label <name>            define label, reference to next instruction's address
-    bnzl <label>            label version of bnz, value in label address as immediate value
-    movl <Tr> <label>       label version of mov, value in label address as immediate value
+    bnzl <label>            label version of bnz, labeled address as immediate value
+    movl <Tr> <label>       label version of mov, labeled address as immediate value
     """
     inst_map = {
         'nop': (encode_no_op, False, [0]),
