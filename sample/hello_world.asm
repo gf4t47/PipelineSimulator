@@ -3,7 +3,7 @@
 mov 1 0                       ; init counter as 0, reg#1 is used to compare iteration times
 movl 3 ascii_end              ; init output pointer, reg#3 is used to write data to memory[reg#3]
 movl 2 ascii_end              ; init input pointer, reg#2 is used to read data from memory[reg#2]
-add 2 -4                      ; set pointer - 1 since we initialized it from the tail of ascii memory
+add 2 -4                      ; input pointer - 1 since we initialized it from the tail of ascii memory
 
 
 ;;; do-while loop
