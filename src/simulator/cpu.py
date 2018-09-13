@@ -47,16 +47,22 @@ class Cpu:
 
         return self.memory[self.pc: self.pc + 4]
 
-    def run(self, max_step: int):
+    def run(self, max_step: int)->bytearray:
         """
         execute binary instructions from memory
         :param max_step:
         :return:
         """
         count_step = 0
+
         while count_step < max_step:
             inst = self._fetch()
             _, inst_handler = inst_set[inst[0]]
-            self.pc += inst_handler(self, inst)
+            try:
+                self.pc += inst_handler(self, inst)
+            except RuntimeError:
+                return self.memory
             count_step += 1
+
         log_err(f"cpu too hot ({max_step}), exit")
+        return self.memory

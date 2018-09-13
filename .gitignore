@@ -1,4 +1,4 @@
 
-/test/**/\.*_cache/
+/**/\.*_cache/
 /\.idea/
 /**/__pycache__/

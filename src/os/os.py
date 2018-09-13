@@ -8,7 +8,7 @@ def _load(path: str):
     return mem
 
 
-def execute(file: str):
+def execute(file: str)->bytearray:
     mem = _load(file)
     cpu = Cpu(mem)
-    cpu.run(1000)
+    return cpu.run(1000)

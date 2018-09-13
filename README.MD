@@ -14,7 +14,7 @@ lea <Tr> <Ar>      # load data from memory (address hold by Address Register) to
 mov <Tr> <imme>    # move immediate value to Temporary Register
 st <Dr> <Ar>       # store data from Data Register to memory (address hold by Address Register)
 add <Tr> <imme>    # Add immediate value to Temporary Register
-cmpi <Tr> <imme>   # compare Temporary Register with immediate value, store result in Flag  Register
+cmpi <Tr> <imme>   # compare Temporary Register larger than immediate value, store result in Flag Register
 bnz <imme>         # relative branch to address if Flag Register is non-zero
 nop                # no operation
 halt               # halt the cpu

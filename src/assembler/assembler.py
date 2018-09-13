@@ -10,7 +10,6 @@ COMMENT_SYMBOL = ';'
 
 
 def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]}):
-    log(f"encode: {line}")
     code = line.split(COMMENT_SYMBOL, 1)[0]  # remove inline comments
     words = code.split()
     key = words[0].strip()
@@ -48,15 +47,18 @@ def parse_file(lines: [str]):
     return instructions
 
 
-def assemble(path: str, extn='.bin'):
+def assemble(path: str, extn='.bin')->str:
     f = open(path)
     instructions = parse_file(f.readlines())
     f.close()
 
     filename, _ = os.path.splitext(path)
-    of = open(filename + extn, "w+b")
+    executable = filename + extn
+    of = open(executable, "w+b")
     assert of
 
     for inst in instructions:
         of.write(inst_to_bytes(inst))
     of.close()
+
+    return executable

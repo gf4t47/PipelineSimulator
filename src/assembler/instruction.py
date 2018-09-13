@@ -144,9 +144,9 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     nop                     no operation
     halt                    halt the cpu
     data <imme_byte>...     define data
-    label <name>            define label
-    bnzl <label>            label version of bnz
-    movl <Tr> <label>       label version of mov
+    label <name>            define label, reference to next instruction's address
+    bnzl <label>            label version of bnz, value in label address as immediate value
+    movl <Tr> <label>       label version of mov, value in label address as immediate value
     """
     inst_map = {
         'nop': (encode_no_op, False, [0]),
@@ -170,7 +170,7 @@ def relocate_label(record: Tuple[int, str, int, str, bool], label_addr: int, ins
     """
     :param inst_map: op_key -> op_code
     :param record: (pc, op, tr, label_name, absolute_flag)
-    :param label_addr:
+    :param label_addr: stored pc
     """
     pc, op, tr, label, is_abs_addr = record
     jump_addr = label_addr if is_abs_addr else label_addr - pc

@@ -130,7 +130,9 @@ def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
     :param inst: one instruction
     """
     log("halt")
-    sys.exit(0)
+    # sys.exit(0) change to throw exception to keep the current memory state
+    raise RuntimeError('halt')
+
 
 
 """
