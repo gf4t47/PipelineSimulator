@@ -32,9 +32,9 @@ def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]})
 def parse_file(lines: [str])->[int]:
     """
     Two times scan approach
-    1. generate instructions for real operation
-    2. generate instruction place holder ([records]) for pseudo code
-    3. relocate each record to fill the real instruction
+    1. generate instructions for real operation and data
+    2. generate instruction place holder ([records], [labels]) for pseudo code
+    3. relocate each [record] to fill the real instruction via looking up [pc] in [labels]
     :param lines: asm file to lines of string
     :return: all generated instructions as List[int]
     """
