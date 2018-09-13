@@ -1,3 +1,17 @@
+## Description
+You will implement a CPU simulator to run a binary executable file and return memory state as byte array after the execution.
+```python
+def execute(executable_file: str)->bytearray:
+    """
+    execute the binary executable file
+    :param executable_file: file path
+    :return: memory after the execution
+    """
+    pass
+```
+You can use the assembler.py provided to generate binary file from assemble files. The specification of the assemble language in this project is a very simple version of YASM, see more detail in [Specification](##Specification)
+## Example
+There is a [sample](./sample/) directory including both [assemble file](./sample/hello_world.asm) and [binary file](./sample/hello_world.bin), with an [unit test](./sample/sample_test.py) to show what is the expectation of your implementation.
 ## Specification
 ### register files
 word wide: 32bit, little endian
