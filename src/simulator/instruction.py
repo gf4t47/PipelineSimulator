@@ -142,12 +142,12 @@ nop                     no operation
 halt                    halt the cpu
 """
 inst_set = [
-    ('nop', _op_nop),  # instruction[0] == 0
-    ('lea', _op_lea),  # instruction[0] == 1
-    ('mov', _op_movi),  # instruction[0] == 2
-    ('st', _op_st),  # instruction[0] == 3
-    ('add', _op_add),  # instruction[0] == 4
+    ('nop', _op_nop),    # instruction[0] == 0
+    ('lea', _op_lea),    # instruction[0] == 1
+    ('mov', _op_movi),   # instruction[0] == 2
+    ('st', _op_st),      # instruction[0] == 3
+    ('add', _op_add),    # instruction[0] == 4
     ('cmpi', _op_cmpi),  # instruction[0] == 5
-    ('bnz', _op_bnz),  # instruction[0] == 6
-    ('halt', _op_halt)  # instruction[0] == 7
+    ('bnz', _op_bnz),    # instruction[0] == 6
+    ('halt', _op_halt)   # instruction[0] == 7
 ]

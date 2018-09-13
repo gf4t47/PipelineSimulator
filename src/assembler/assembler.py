@@ -13,7 +13,7 @@ def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]})
     """
     1. remove outline or inline comments if exist
     2. split string line to words list
-    3. lookup encoder by operation key(works[0])
+    3. lookup encoder by operation key(words[0])
     4. execute encoder to encode the instruction(s)
     :param line: one line of asm file
     :param pc: program counter
