@@ -22,7 +22,7 @@ r0=0                 # place holder for function call result, is NOT required in
 r1-r12               # register 1~12 are general purpose registers for your usage
 r13-pc               # program counter 
 r14-lr               # place holder for link register, is NOT required in this project
-r15-st               # Flag Register, used to in CPU to decide branch instruction result
+r15-st               # Flag Register (aka CPU state register), used to in CPU to decide branch instruction result
 ```
 ### instruction set
 ```
@@ -50,7 +50,7 @@ bytes[0] operation code
 bytes[1] output register
 bytes[2] input register 1
 bytes[3] input register 2
-bytes[2,3] immediate value  # short int wide: 16bit, little endian, singed  
+bytes[2,3] immediate value  # short int wide: 16bit, little endian, signed  
 ```
 #### operation encoding:
 |bytes[0]|operation|
