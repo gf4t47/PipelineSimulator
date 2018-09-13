@@ -4,11 +4,11 @@ from src.assembler.assembler import assemble
 from src.index import execute
 
 
-@pytest.mark.parametrize("assemble_name, expected", [
+@pytest.mark.parametrize("asm_file, expected", [
     ('sample/hello_world.asm', 'Hello World')
 ])
-def test_memory_to_str(assemble_name, expected):
-    executable = assemble(assemble_name)
+def test_memory_to_str(asm_file, expected):
+    executable = assemble(asm_file)
     mem = execute(executable)
     assert mem is not None
 
