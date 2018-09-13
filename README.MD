@@ -1,6 +1,6 @@
 ## Description
 You will implement a CPU simulator to run a binary executable file and return the memory state as byte array after the execution.
-  * You are not building the assembly-to-binary compiler that is provided with the code in assembler.py.  You are only building the CPU simulator which executes on the binary file.
+  * You are NOT building the assembly-to-binary compiler that is provided with the code in assembler.py.  You are only building the CPU simulator which executes on the binary file.
   * Please write this code as if you were writing it for work and you will be evaluated on the quality of CPU Simulator code. Feel free to provide comments or auxiliary documentation explaining your design choices and trade-offs. 
   * Please expect that your CPU Simulator code will be tested against a small set of test binaries, built from the same assembly instruction set, using the same assembler. 
 ```python
