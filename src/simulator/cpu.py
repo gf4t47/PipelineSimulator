@@ -36,7 +36,7 @@ class Cpu:
     def _fetch(self)->bytearray:
         """
         get one instruction from memory
-        :return: instruction
+        :return: instruction: bytearray(4)
         """
         if self.pc < 0 or self.pc > DATA_MEMORY_BOUNDARY:
             log_err(f"sys abort due to invalid pc: {self.pc}")
@@ -50,8 +50,8 @@ class Cpu:
     def run(self, max_step: int)->bytearray:
         """
         execute binary instructions from memory
-        :param max_step:
-        :return:
+        :param max_step: max step threshold, otherwise CPU will be on fire
+        :return: memory states after the execution
         """
         count_step = 0
 

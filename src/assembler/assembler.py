@@ -10,6 +10,16 @@ COMMENT_SYMBOL = ';'
 
 
 def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]})->(Tuple[int, int], Tuple[int, List[int]]):
+    """
+    1. remove outline or inline comments if exist
+    2. split string line to words list
+    3. lookup encoder by operation key(works[0])
+    4. execute encoder to encode the instruction(s)
+    :param line: one line of asm file
+    :param pc: program counter
+    :param inst_map: instruction encoder map
+    :return: (count of address the pc should move, instruction(s) content)
+    """
     code = line.split(COMMENT_SYMBOL, 1)[0]  # remove inline comments
     words = code.split()
     key = words[0].strip()
@@ -20,6 +30,14 @@ def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]})
 
 
 def parse_file(lines: [str])->[int]:
+    """
+    Two times scan approach
+    1. generate instructions for real operation
+    2. generate instruction place holder ([records]) for pseudo code
+    3. relocate each record to fill the real instruction
+    :param lines: asm file to lines of string
+    :return: all generated instructions as List[int]
+    """
     pc = 0
     labels = {}
     records = []
@@ -29,11 +47,11 @@ def parse_file(lines: [str])->[int]:
     for line in lines:
         words = line.strip()
         if words and (not words.isspace()) and (not words.startswith(COMMENT_SYMBOL)):
-            count, inst = parse_line(words, pc, inst_map)
-            if not isinstance(inst, list):
-                instructions.append(inst)
+            count, insts = parse_line(words, pc, inst_map)
+            if not isinstance(insts, list):
+                instructions.append(insts)
             else:
-                instructions.extend(inst)
+                instructions.extend(insts)
             pc += count
 
     for record in records:
@@ -48,6 +66,13 @@ def parse_file(lines: [str])->[int]:
 
 
 def assemble(path: str, extn='.bin')->str:
+    """
+    1. from asm file generate the instructions
+    2. write the instructions into file
+    :param path: asm file path
+    :param extn: binary/executable file extension
+    :return: generated binary/executable file path
+    """
     f = open(path)
     instructions = parse_file(f.readlines())
     f.close()
