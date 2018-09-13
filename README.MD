@@ -15,7 +15,7 @@ def execute(executable_file: str)->bytearray:
   
 You can use the [assembler.py](./src/assembler/assembler.py) provided to generate binary file from from a string of assembly instructions. The assembly language in this project is an abridgment based on YASM, see more detail in [Specification](##Specification)
 ## Example
-There is a [sample](./sample/) directory including both [assemble file](./sample/hello_world.asm) and [binary file](./sample/hello_world.bin), with an [unit test](./sample/sample_test.py) to show what is the expectation for your implementation.
+There is a [sample](./sample) directory including both [assemble file](./sample/hello_world.asm) and [binary file](./sample/hello_world.bin), with an [unit test](./sample/sample_test.py) to show what is the expectation for your implementation.
 ## Specification
 ### register files
 ```
