@@ -1,7 +1,7 @@
 from src.simulator.cpu import Cpu
 
 
-def _load(path: str):
+def _load(path: str)->bytearray:
     f = open(path, mode='rb')
     mem = bytearray(f.read())
     f.close()

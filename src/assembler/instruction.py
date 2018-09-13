@@ -127,8 +127,10 @@ def record_wrapper(records: [Tuple[int, str, int, str, bool]]) -> Callable:
 
 def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]])->{str: Tuple[Callable, bool, List]}:
     """
-    [ op : [coder, op_code]
-    [ pseudo : [coder, with_tr, op_key, is_abs_addr]
+    operation : (coder, op_code)
+    data: (coder)
+    label: (coder, pc)
+    pseudo op: (coder, with_tr, op_key, is_abs_addr, pc)
     :param labels: all labels { name: pc }
     :param records: [(pc, op, tr, label_name, absolute_flag)]
     :return: instruction set assembler
@@ -143,7 +145,7 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     bnz <imme>              relative branch to address if Flag Register is non-zero
     nop                     no operation
     halt                    halt the cpu
-    data <imme_byte>...     define data
+    data <imme>...          define data (could be multiple data in one line)
     label <name>            define label, reference to next instruction's address
     bnzl <label>            label version of bnz, labeled address as immediate value
     movl <Tr> <label>       label version of mov, labeled address as immediate value
@@ -166,7 +168,7 @@ def make_inst_map(labels: {str: int}, records: [Tuple[int, str, int, str, bool]]
     return inst_map
 
 
-def relocate_label(record: Tuple[int, str, int, str, bool], label_addr: int, inst_map: {str: Tuple[Callable, bool, List[int]]}):
+def relocate_label(record: Tuple[int, str, int, str, bool], label_addr: int, inst_map: {str: Tuple[Callable, bool, List[int]]})->int:
     """
     :param inst_map: op_key -> op_code
     :param record: (pc, op, tr, label_name, absolute_flag)

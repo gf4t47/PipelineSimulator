@@ -9,7 +9,7 @@ from src.util.log import log
 COMMENT_SYMBOL = ';'
 
 
-def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]}):
+def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]})->(Tuple[int, int], Tuple[int, List[int]]):
     code = line.split(COMMENT_SYMBOL, 1)[0]  # remove inline comments
     words = code.split()
     key = words[0].strip()
@@ -19,7 +19,7 @@ def parse_line(line: str, pc: int, inst_map: {str: Tuple[Callable, bool, List]})
     return encoder(words[1::], *info, pc) if require_pc else encoder(words[1::], *info)
 
 
-def parse_file(lines: [str]):
+def parse_file(lines: [str])->[int]:
     pc = 0
     labels = {}
     records = []

@@ -1,14 +1,11 @@
-import sys
-
 from src.util.converter import inst_to_bytes, imme_to_int, inst_to_int
 from src.util.log import log_err, log
-
 
 DATA_MEMORY_BOUNDARY = 4096
 
 
 # noinspection PyUnusedLocal
-def _op_nop(cpu: 'Cpu', inst: bytearray)->int:
+def _op_nop(cpu: 'Cpu', inst: bytearray) -> int:
     """
     nop
     :param cpu: 'Cpu' instance
@@ -18,7 +15,7 @@ def _op_nop(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_lea(cpu: 'Cpu', inst: bytearray)->int:
+def _op_lea(cpu: 'Cpu', inst: bytearray) -> int:
     """
     lea <Tr> <Ar>
     :param cpu: 'Cpu' instance
@@ -39,7 +36,7 @@ def _op_lea(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_movi(cpu: 'Cpu', inst: bytearray)->int:
+def _op_movi(cpu: 'Cpu', inst: bytearray) -> int:
     """
     mov <Tr> <imme>
     :param cpu: 'Cpu' instance
@@ -52,7 +49,7 @@ def _op_movi(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_st(cpu: 'Cpu', inst: bytearray)->int:
+def _op_st(cpu: 'Cpu', inst: bytearray) -> int:
     """
     st <Dr> <Ar>
     :param cpu: 'Cpu' instance
@@ -76,7 +73,7 @@ def _op_st(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_add(cpu: 'Cpu', inst: bytearray)->int:
+def _op_add(cpu: 'Cpu', inst: bytearray) -> int:
     """
     add <Tr> <imme>
     :param cpu: 'Cpu' instance
@@ -89,7 +86,7 @@ def _op_add(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
+def _op_cmpi(cpu: 'Cpu', inst: bytearray) -> int:
     """
     cmpi <Sr>, <imme>
     :param cpu: 'Cpu' instance
@@ -107,7 +104,7 @@ def _op_cmpi(cpu: 'Cpu', inst: bytearray)->int:
     return 4
 
 
-def _op_bnz(cpu: 'Cpu', inst: bytearray)->int:
+def _op_bnz(cpu: 'Cpu', inst: bytearray) -> int:
     """
     bz <imme>
     :param cpu: 'Cpu' instance
@@ -123,7 +120,7 @@ def _op_bnz(cpu: 'Cpu', inst: bytearray)->int:
 
 
 # noinspection PyUnusedLocal
-def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
+def _op_halt(cpu: 'Cpu', inst: bytearray) -> None:
     """
     halt
     :param cpu: 'Cpu' instance
@@ -132,7 +129,6 @@ def _op_halt(cpu: 'Cpu', inst: bytearray)->None:
     log("halt")
     # sys.exit(0) change to throw exception to keep the current memory state
     raise RuntimeError('halt')
-
 
 
 """
@@ -146,12 +142,12 @@ nop                     no operation
 halt                    halt the cpu
 """
 inst_set = [
-    ('nop', _op_nop),       # instruction[0] == 0
-    ('lea', _op_lea),       # instruction[0] == 1
-    ('mov', _op_movi),      # instruction[0] == 2
-    ('st', _op_st),         # instruction[0] == 3
-    ('add', _op_add),       # instruction[0] == 4
-    ('cmpi', _op_cmpi),     # instruction[0] == 5
-    ('bnz', _op_bnz),       # instruction[0] == 6
-    ('halt', _op_halt)      # instruction[0] == 7
+    ('nop', _op_nop),  # instruction[0] == 0
+    ('lea', _op_lea),  # instruction[0] == 1
+    ('mov', _op_movi),  # instruction[0] == 2
+    ('st', _op_st),  # instruction[0] == 3
+    ('add', _op_add),  # instruction[0] == 4
+    ('cmpi', _op_cmpi),  # instruction[0] == 5
+    ('bnz', _op_bnz),  # instruction[0] == 6
+    ('halt', _op_halt)  # instruction[0] == 7
 ]

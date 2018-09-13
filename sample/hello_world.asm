@@ -6,7 +6,9 @@ movl 3 output_addr            ; init output pointer, reg#3 is used to write data
 
 
 ;;; do-while loop
-label loop                    ; iterate 11 times
+label loop                    ; to iterate 11(len("Hello World")) times
+
+nop                           ; affect nothing, just to show the meaning of a meaningless operation :)
 
 lea 4 2                       ; load data from memory[reg#2] to reg#4
 st 4 3                        ; save data from reg#4 to memory[reg#3]
@@ -15,8 +17,8 @@ add 2 4                       ; input pointer + 1, by reg#2 + 4
 add 3 4                       ; output pointer + 1, by reg#3 + 4
 
 add 1 1                       ; counter + 1
-cmpi 1 11                     ; compare reg#1 > 11
-bnzl loop                     ; jump to label [loop] or move out
+cmpi 1 11                     ; compare reg#1 > 11, store comparison result into Flag Register
+bnzl loop                     ; jump to label [loop] or move out according to Flag Register
 
 ;;; stop
 halt
