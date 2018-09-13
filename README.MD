@@ -1,5 +1,8 @@
 ## Description
 You will implement a CPU simulator to run a binary executable file and return the memory state as byte array after the execution.
+  * You are not building the assembly-to-binary compiler that is provided with the code in assembler.py.  You are only building the CPU simulator which executes on the binary file.
+  * Please write this code as if you were writing it for work and you will be evaluated on the quality of CPU Simulator code. Feel free to provide comments or auxiliary documentation explaining your design choices and trade-offs. 
+  * Please expect that your CPU Simulator code will be tested against a small set of test binaries, built from the same assembly instruction set, using the same assembler. 
 ```python
 def execute(executable_file: str)->bytearray:
     """
@@ -9,44 +12,45 @@ def execute(executable_file: str)->bytearray:
     """
     pass
 ```
-You can use the [assembler.py](./src/assembler/assembler.py) provided to generate binary file from assembling. The assemble language in this project is an abridgment based on YASM, see more detail in [Specification](##Specification)
+You can use the [assembler.py](./src/assembler/assembler.py) provided to generate binary file from from a string of assembly instructions. The assembly language in this project is an abridgment based on YASM, see more detail in [Specification](##Specification)
 ## Example
 There is a [sample](./sample/) directory including both [assemble file](./sample/hello_world.asm) and [binary file](./sample/hello_world.bin), with an [unit test](./sample/sample_test.py) to show what is the expectation for your implementation.
 ## Specification
 ### register files
-word wide: 32bit, little endian
 ```
-r0=0
-r1-r12
-r13-pc
-r14-lr-link register
-r15-st-cpu state: bit0-zero bit1-bigger than
+r0=0                 # place holder for function call result, is NOT required in this project 
+r1-r12               # register 1~12 are general purpose registers for your usage
+r13-pc               # program counter 
+r14-lr               # place holder for link register, is NOT required in this project
+r15-st               # Flag Register, used to in CPU to decide branch instruction result
 ```
 ### instruction set
 ```
-lea <Tr> <Ar>      # load data from memory (address hold by Address Register) to Temporary Register
-mov <Tr> <imme>    # move immediate value to Temporary Register
-st <Dr> <Ar>       # store data from Data Register to memory (address hold by Address Register)
-add <Tr> <imme>    # Add immediate value to Temporary Register
-cmpi <Tr> <imme>   # compare Temporary Register larger than immediate value, store result in Flag Register
-bnz <imme>         # relative branch to address if Flag Register is non-zero
-nop                # no operation
-halt               # halt the cpu
+lea <Tr> <Ar>        # load data from memory (memory address hold by Address Register) to Temporary Register
+mov <Tr> <imme>      # move immediate value to Temporary Register
+st <Dr> <Ar>         # store data from Data Register to memory (memory address hold by Address Register)
+add <Tr> <imme>      # Add immediate value to Temporary Register
+cmpi <Tr> <imme>     # compare Temporary Register larger than immediate value, store result in Flag Register
+bnz <imme>           # relative branch to address if Flag Register is non-zero
+nop                  # no operation
+halt                 # halt the cpu
 ```
 ### pseudo code
+pseudo code is not real instruction to be executed in CPU, they are consumed by assembler, assembler will use them to generate real instructions in above instruction set. 
 ```
-data <imme>...          # define data (could be multiple data in one line)
-label <name>            # define label
-bnzl <label>            # label version of bnz, labeled address as immediate value
-movl <label>            # label version of mov, labeled address as immediate value
+data <imme>...       # define data (could be multiple data in one line)
+label <name>         # define label
+bnzl <label>         # label version of bnz, labeled address as immediate value
+movl <label>         # label version of mov, labeled address as immediate value
 ```
 ### instruction encoding
+**word wide: 32bit, little endian**
 ```
 bytes[0] operation code
 bytes[1] output register
 bytes[2] input register 1
 bytes[3] input register 2
-bytes[2,3] immediate value
+bytes[2,3] immediate value  # short int wide: 16bit, little endian, singed  
 ```
 #### operation encoding:
 |bytes[0]|operation|
@@ -66,9 +70,4 @@ bytes[2,3] immediate value
     0: output
     4: input
 others are invalid
-```
-### interrupt vector
-```
-0:       system reset
-1024:    input port interrupt
 ```
