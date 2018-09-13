@@ -17,4 +17,4 @@ def test_memory_to_str(asm_file, expected):
         byte = mem[- (4 * index): - (4 * index) + 4] if index != 1 else mem[-4:]
         actual += chr(int.from_bytes(byte, 'little', signed=False))
 
-    assert expected == actual[::-1]
+    assert expected == actual
