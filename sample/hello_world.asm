@@ -5,8 +5,8 @@ movl 2 ascii_addr ;init input pointer, reg#2 is used to read data from memory[re
 movl 3 output_addr ;init output pointer, reg#3 is used to write data to memory[reg#3]
 
 
-;;; do while loop
-label loop ;iterate 11 times, like a do-while loop
+;;; do-while loop
+label loop ;iterate 11 times
 
 lea 4 2 ;load data from memory[reg#2] to reg#4
 st 4 3 ;save data from reg#4 to memory[reg#3]
@@ -16,7 +16,7 @@ add 3 4 ;output pointer + 1, by reg#3 + 4
 
 add 1 1 ;counter + 1
 cmpi 1 11 ; compare reg#1 > 11
-bnzl loop ; jump to label loop or move out
+bnzl loop ; jump to label [loop] or move out
 
 ;;; stop
 halt
