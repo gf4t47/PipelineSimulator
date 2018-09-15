@@ -90,7 +90,7 @@ def assemble(path: str, extn='.bin')->str:
     :param extn: binary/executable file extension
     :return: generated binary/executable file path
     """
-    with open(path) as f:
+    with open(path, 'r') as f:
         instructions = parse_file(f.readlines())
 
     filename, _ = os.path.splitext(path)
