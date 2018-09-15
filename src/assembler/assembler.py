@@ -90,17 +90,14 @@ def assemble(path: str, extn='.bin')->str:
     :param extn: binary/executable file extension
     :return: generated binary/executable file path
     """
-    f = open(path)
-    instructions = parse_file(f.readlines())
-    f.close()
+    with open(path) as f:
+        instructions = parse_file(f.readlines())
 
     filename, _ = os.path.splitext(path)
     executable = filename + extn
-    of = open(executable, "w+b")
-    assert of
 
-    for inst in instructions:
-        of.write(inst_to_bytes(inst))
-    of.close()
+    with open(executable, "w+b") as of:
+        for inst in instructions:
+            of.write(inst_to_bytes(inst))
 
     return executable
