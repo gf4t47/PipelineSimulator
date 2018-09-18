@@ -51,7 +51,7 @@ bytes[0] operation code
 bytes[1] output register
 bytes[2] input register 1
 bytes[3] input register 2
-bytes[2,3] immediate value  # short int wide: 16bit, little endian, signed  
+bytes[2,3] immediate value  # short wide: 16bit, little endian, signed
 ```
 #### operation encoding:
 |bytes[0]|operation|
