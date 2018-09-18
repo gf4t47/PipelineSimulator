@@ -39,10 +39,10 @@ halt                 # halt the cpu
 ### pseudo code
 pseudo code is not real instruction to be executed in CPU, they are consumed by assembler, assembler will use them to generate real instructions in above instruction set. 
 ```
-data <imme>...       # define data (could be multiple data in one line)
-label <name>         # define label
-bnzl <label>         # label version of bnz, labeled address as immediate value
-movl <label>         # label version of mov, labeled address as immediate value
+data <imme>...       # define data (could be multiple data in one line), could be use to define data in memory
+label <name>         # define label, as a reference for followed pseudo code to relocate
+bnzl <label>         # label version of bnz, resolve labeled address as immediate value
+movl <label>         # label version of mov, resolve labeled address as immediate value
 ```
 ### instruction encoding
 **word wide: 32bit, little endian**
