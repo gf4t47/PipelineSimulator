@@ -13,7 +13,7 @@ def execute(executable_file: str)->bytearray:
   * Please write this code as if you were writing it for work and you will be evaluated on the quality of CPU Simulator code. Feel free to provide comments or auxiliary documentation explaining your design choices and trade-offs. 
   * Please expect that your CPU Simulator code will be tested against a small set of test binaries, built from the same assembly instruction set, using the same assembler.
   
-You can use the [assembler.py](./src/assembler/assembler.py) provided to generate binary file from from a string of assembly instructions. The assembly language in this project is an abridgment based on YASM, see more detail in [Specification](##Specification)
+You can use the [assembler.py](./src/assembler/assembler.py) provided to generate binary file from a string of assembly instructions. The assembly language in this project is an abridgment based on YASM, see more detail in [Specification](##Specification)
 ## Example
 There is a [sample](./sample) directory including both [assemble file](./sample/hello_world.asm) and [binary file](./sample/hello_world.bin), with an [unit test](./sample/sample_test.py) to show what is the expectation for your implementation.
 ## Specification
