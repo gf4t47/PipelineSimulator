@@ -1,4 +1,5 @@
 from src.simulator.cpu import Cpu
+from src.simulator.instruction import DATA_MEMORY_BOUNDARY
 
 
 def _load(path: str)->bytearray:
@@ -7,10 +8,16 @@ def _load(path: str)->bytearray:
     :param path: binary file path
     :return: memory as bytearray
     """
-    f = open(path, mode='rb')
-    mem = bytearray(f.read())
-    f.close()
-    return mem
+    with open(path, mode='rb') as f:
+        mem = bytearray(f.read())
+        size = len(mem)
+        due = DATA_MEMORY_BOUNDARY * 2 - size
+        if due < 0:
+            raise RuntimeError(f'memory out of range: {size} > {DATA_MEMORY_BOUNDARY * 2}')
+        elif due > 0:
+            mem[size: DATA_MEMORY_BOUNDARY * 2] = bytes([0]) * due
+
+        return mem
 
 
 def process(file: str)->bytearray:

@@ -1,4 +1,3 @@
-# noinspection PyUnusedLocal
 from src.os.os import process
 
 

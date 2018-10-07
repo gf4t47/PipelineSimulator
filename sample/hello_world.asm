@@ -1,7 +1,7 @@
 
 ;;; initialization
 mov 1 0                       ; init counter as 0, reg#1 is used to compare iteration times
-movl 3 ascii_end              ; init output pointer, reg#3 is used to write data to memory[reg#3]
+mov 3 4052                    ; init output pointer, reg#3 is used to write data to memory[reg#3], 4096 - 11 * 4, write to end of data memory
 movl 2 ascii_end              ; init input pointer, reg#2 is used to read data from memory[reg#2]
 add 2 -4                      ; input pointer - 1 since we initialized it from the tail of ascii memory
 

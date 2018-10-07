@@ -79,7 +79,7 @@ def _op_st(cpu: 'Cpu', inst: bytearray) -> int:
 
     if addr >= DATA_MEMORY_BOUNDARY:
         if addr == DATA_MEMORY_BOUNDARY:
-            log_err("invalid addr(%c)", (inst_to_bytes(cpu.register[tr])[0]))
+            log_err("invalid data addr (%c)", (inst_to_bytes(cpu.register[tr])[0]))
         else:
             log_err("invalid io(0x%x)!", (cpu.register[tr]))
     else:
