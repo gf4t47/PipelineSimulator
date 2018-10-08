@@ -15,7 +15,7 @@ def _load(path: str)->bytearray:
         if due < 0:
             raise RuntimeError(f'memory out of range: {size} > {DATA_MEMORY_BOUNDARY * 2}')
         elif due > 0:
-            mem[size: DATA_MEMORY_BOUNDARY * 2] = bytes([0]) * due
+            mem[size: size + due] = bytes([0]) * due
 
         return mem
 
